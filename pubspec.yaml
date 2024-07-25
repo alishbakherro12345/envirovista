@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.6 <4.0.0'
+  sdk: '>=3.2.0 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -35,6 +35,19 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  firebase_core: ^3.0.0
+  firebase_storage: ^12.0.0
+  firebase_auth: ^5.0.0
+  cloud_firestore: ^5.0.0
+  flutter_styled_toast: 2.2.1
+  google_nav_bar: ^5.0.6
+  image_picker: ^0.8.5+3
+  shared_preferences: ^2.0.6
+  flutter_advanced_drawer: ^1.3.6
+
+
+
+
 
 dev_dependencies:
   flutter_test:
@@ -59,8 +72,32 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - images/logo-1.png
+    - images/info-1.png
+    - images/info-2.png
+    - images/signup-2.jpg
+    - images/signin-1.jpg
+    - images/food-1.png
+    - images/car-1.png
+    - images/home-1.png
+    - images/reduce-1.png
+    - images/foodcard-1.png
+    - images/foodcard-2.png
+    - images/foodcard-3.png
+    - images/foodcard-4.png
+    - images/foodcard-5.png
+    - images/wavinghand-1.png
+    - images/apple-1.png
+    - images/electricityplug-1.png
+    - images/greenplant-1.png
+    - images/electricbulb-1.png
+    - images/transportoil-1.png
+    - images/budge-1.png
+    - images/coin-1.png
+
+
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
