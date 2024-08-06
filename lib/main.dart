@@ -1,9 +1,4 @@
-import 'package:envirovista/footprint_result.dart';
-import 'package:envirovista/profile_page.dart';
-import 'package:envirovista/reduce_page.dart';
 import 'package:envirovista/sign_in.dart';
-import 'package:envirovista/sign_up.dart';
-import 'package:envirovista/splashscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -21,7 +16,7 @@ class EnviroVista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return  const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SignIn(),
     );

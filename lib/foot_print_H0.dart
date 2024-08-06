@@ -1,15 +1,11 @@
-import 'dart:js_interop';
 
-import 'package:envirovista/foot_print_1.dart';
 import 'package:envirovista/foot_print_H1.dart';
 import 'package:envirovista/foot_print_page.dart';
 import 'package:envirovista/models/footprintsectionmodel.dart';
 import 'package:envirovista/top_av_bar_H.dart';
 import 'package:flutter/material.dart';
 import 'package:envirovista/roundbutton.dart';
-import 'package:envirovista/top_nav_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'custom_bottom_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FootPrintH0 extends StatefulWidget {
