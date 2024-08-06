@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "281366466898",
+    "project_id": "enviro-vista",
+    "storage_bucket": "enviro-vista.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281366466898:android:8aed9454d39255d19c2a8b",
+        "android_client_info": {
+          "package_name": "com.example.envirovista"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAe3CdZn_zCKqO-o3wXyOX71-0RBhem1fw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
