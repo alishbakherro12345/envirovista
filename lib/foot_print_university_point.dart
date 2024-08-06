@@ -15,6 +15,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'custom_bottom_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'models/footprintsectionmodel.dart';
+
 class FootPrintUniversityPoint extends StatefulWidget {
   const FootPrintUniversityPoint({super.key});
 
@@ -247,10 +249,10 @@ class _FootPrintUniversityPointState extends State<FootPrintUniversityPoint> {
     });
 
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final footprintid = 'Transport Section';
+    final footPrintName = 'Transport Section';
 
     Map<String, dynamic> data = {
-      'footprintid': footprintid,
+      'footprintid': footPrintName,
       'Q1': _selectedValue1,
       'Q2': _selectedValue2,
       'Q3': _selectedValue3,
@@ -266,7 +268,24 @@ class _FootPrintUniversityPointState extends State<FootPrintUniversityPoint> {
 
     try {
       String currentuserid = FirebaseAuth.instance.currentUser!.uid;
-      await firestore.collection('users').doc(currentuserid).collection('Daily Schooler').doc(footprintid).set(data);
+      FootPrintSectionModel footPrintSectionModel = FootPrintSectionModel.empty();
+      footPrintSectionModel.id = '4';
+      footPrintSectionModel.name = footPrintName;
+      List <QuestionModel> questions = [];
+      questions.add(QuestionModel('0', 'What is your primary mode of transportation for commuting to and from university?', '0',_selectedValue1));
+      questions.add(QuestionModel('1', 'How often do you use the university bus to commute to and from the campus?', '0',_selectedValue2));
+      questions.add(QuestionModel('2', 'Why do you choose to use the university bus as your main mode of transportation?', '0',_selectedValue3));
+      questions.add(QuestionModel('3', 'How satisfied are you with the university bus service?(1 satisfied - 5 very satisfied)', '0',_selectedValue4));
+      questions.add(QuestionModel('4', 'Starting Point', '0',_question5.text));
+      questions.add(QuestionModel('5', 'Destination (Department)', '0',_question6.text));
+      questions.add(QuestionModel('6', 'Approximately how kilometers do you travel once way from home to university?', '0',_question7.text));
+      questions.add(QuestionModel('7', 'Approximately how much time do you travel one way from home to university?', '0',_question8.text));
+      questions.add(QuestionModel('8', 'Most frequently which university point you see? (hint: 13)', '0',_question9.text));
+
+
+      footPrintSectionModel.questions = questions;
+      await footPrintSectionModel.saveToFirestore (uid: currentuserid, footprintCollectionName: 'Daily Schooler');
+      //await firestore.collection('users').doc(currentuserid).collection('Daily Schooler').doc(footprintid).set(data);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
       return true;
     } catch (e) {

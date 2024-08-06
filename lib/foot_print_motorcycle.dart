@@ -11,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'custom_bottom_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'models/footprintsectionmodel.dart';
+
 class FootPrintMotorcycle extends StatefulWidget {
   const FootPrintMotorcycle({super.key});
 
@@ -276,10 +278,10 @@ class _FootPrintMotorcycleState extends State<FootPrintMotorcycle> {
     });
 
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final footprintid = 'Transport Section';
+    final footPrintName = 'Transport Section';
 
     Map<String, dynamic> data = {
-      'footprintid': footprintid,
+      'footprintid': footPrintName,
       'Q1': _selectedValue1,
       'Q2': _selectedValue2,
       'Q3': _selectedValue3,
@@ -291,7 +293,21 @@ class _FootPrintMotorcycleState extends State<FootPrintMotorcycle> {
 
     try {
       String currentuserid = FirebaseAuth.instance.currentUser!.uid;
-      await firestore.collection('users').doc(currentuserid).collection('Daily Schooler').doc(footprintid).set(data);
+      FootPrintSectionModel footPrintSectionModel = FootPrintSectionModel.empty();
+      footPrintSectionModel.id = '4';
+      footPrintSectionModel.name = footPrintName;
+      List <QuestionModel> questions = [];
+      questions.add(QuestionModel('0', 'What is your primary mode of transportation for commuting to and from university?', '0',_selectedValue1));
+      questions.add(QuestionModel('1', 'How often do you use your motorcycle for commuting university?', '0',_selectedValue2));
+      questions.add(QuestionModel('2', 'Approximately how far you ride the bike in department?', '0',_selectedValue3));
+      questions.add(QuestionModel('3', 'Approximately how long your walk/cycle is to the department?', '0',_selectedValue4));
+      questions.add(QuestionModel('4', 'Do you know the fuel efficiency of motorcycle?(liters pr kilometers)', '0',_selectedValue5));
+      questions.add(QuestionModel('5', 'Starting Point', '0',_question6.text));
+      questions.add(QuestionModel('6', 'Destination (Department)', '0',_question7.text));
+
+      footPrintSectionModel.questions = questions;
+      await footPrintSectionModel.saveToFirestore (uid: currentuserid, footprintCollectionName: 'Daily Schooler');
+      //await firestore.collection('users').doc(currentuserid).collection('Daily Schooler').doc(footprintid).set(data);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
       return true;
     } catch (e) {

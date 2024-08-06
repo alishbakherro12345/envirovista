@@ -12,6 +12,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'custom_bottom_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'models/footprintsectionmodel.dart';
+
 class FootPrintCar extends StatefulWidget {
   const FootPrintCar({super.key});
 
@@ -182,7 +184,7 @@ class _FootPrintCarState extends State<FootPrintCar> {
                                   loading = true;
                                 });
                                 _saveData();
-                                _resultData();
+                                //_resultData();
                                 setState(() {
                                   loading = false;
                                 });
@@ -282,10 +284,10 @@ class _FootPrintCarState extends State<FootPrintCar> {
     });
 
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final footprintid = 'Transport Section';
+    final footPrintName = 'Transport Section';
 
     Map<String, dynamic> data = {
-      'footprintid': footprintid,
+      'footprintid': footPrintName,
 
       'Q1': _selectedValue1,
       'Q2': _question2.text,
@@ -302,7 +304,24 @@ class _FootPrintCarState extends State<FootPrintCar> {
 
     try {
       String currentuserid = FirebaseAuth.instance.currentUser!.uid;
-      await firestore.collection('users').doc(currentuserid).collection('Daily Schooler').doc(footprintid).set(data);
+      FootPrintSectionModel footPrintSectionModel = FootPrintSectionModel.empty();
+      footPrintSectionModel.id = '4';
+      footPrintSectionModel.name = footPrintName;
+      List <QuestionModel> questions = [];
+      questions.add(QuestionModel('0', 'What is your primary mode of transportation for commuting to and from university?', '0',_selectedValue1));
+      questions.add(QuestionModel('1', 'Starting Point', '0',_question2.text));
+      questions.add(QuestionModel('2', 'Destination (Department)', '0',_question3.text));
+      questions.add(QuestionModel('3', 'How often do you use your car for commuting university?', '0',_selectedValue4));
+      questions.add(QuestionModel('4', 'What type of car do you primarily use for ?', '0',_selectedValue5));
+      questions.add(QuestionModel('5', 'Approximately how many kilometers do you travel one way from home to university?', '0',_question6.text));
+      questions.add(QuestionModel('6', 'Approximately how many time do you travel one way from home to university?', '0',_question7.text));
+      questions.add(QuestionModel('7', 'Manufacturer of your car?', '0',_question8.text));
+      questions.add(QuestionModel('8', 'What is the engine capacity(cc) of your car?', '0',_selectedValue9));
+      questions.add(QuestionModel('9', 'How much fuel is consumed in a round trip?(from: home to uni and vice versa)', '0',_question10.text));
+
+      footPrintSectionModel.questions = questions;
+      await footPrintSectionModel.saveToFirestore (uid: currentuserid, footprintCollectionName: 'Daily Schooler');
+     // await firestore.collection('users').doc(currentuserid).collection('Daily Schooler').doc(footprintid).set(data);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
       return true;
     } catch (e) {
@@ -331,7 +350,8 @@ class _FootPrintCarState extends State<FootPrintCar> {
 
     try {
       String currentuserid = FirebaseAuth.instance.currentUser!.uid;
-      await firestore.collection('users').doc(currentuserid).collection('Hosteller').doc(footprintid).set(data);
+
+     //await firestore.collection('users').doc(currentuserid).collection('Hosteller').doc(footprintid).set(data);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
       return true;
     } catch (e) {

@@ -1,3 +1,4 @@
+import 'package:envirovista/footprint_result.dart';
 import 'package:envirovista/profile_page.dart';
 import 'package:envirovista/reduce_page.dart';
 import 'package:envirovista/sign_in.dart';
@@ -22,7 +23,7 @@ class EnviroVista extends StatelessWidget {
   Widget build(BuildContext context) {
     return  MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Splashscreen(),
+      home: SignIn(),
     );
   }
 }

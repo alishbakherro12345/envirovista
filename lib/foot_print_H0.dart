@@ -1,6 +1,9 @@
+import 'dart:js_interop';
+
 import 'package:envirovista/foot_print_1.dart';
 import 'package:envirovista/foot_print_H1.dart';
 import 'package:envirovista/foot_print_page.dart';
+import 'package:envirovista/models/footprintsectionmodel.dart';
 import 'package:envirovista/top_av_bar_H.dart';
 import 'package:flutter/material.dart';
 import 'package:envirovista/roundbutton.dart';
@@ -249,10 +252,10 @@ class _FootPrintH0State extends State<FootPrintH0> {
   }
   void _saveData() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final footprintid = 'Clothing Section';
+    final footPrintName = 'Clothing Section';
 
     Map<String, dynamic> data = {
-      'footprintid': footprintid,
+      'footPrintName': footPrintName,
       'Q1': _question1.text,
       'Q2': _selectedValue2,
       'Q3': _selectedValue3,
@@ -263,8 +266,19 @@ class _FootPrintH0State extends State<FootPrintH0> {
 
     try {
       String currentuserid = FirebaseAuth.instance.currentUser!.uid;
-      final footprintid = 'Clothing Section';
-      await firestore.collection('users').doc(currentuserid).collection('Hosteller').doc(footprintid).set(data);
+      FootPrintSectionModel footPrintSectionModel = FootPrintSectionModel.empty();
+      footPrintSectionModel.id = '0';
+      footPrintSectionModel.name = footPrintName;
+      List <QuestionModel> questions = [];
+      questions.add(QuestionModel('0', 'Your hostel name?', '0'));
+      questions.add(QuestionModel('1', 'How often do you submit clothes for washing at the hostel laundry service? ', '0'));
+      questions.add(QuestionModel('3', 'On average, how many items of clothing do you submit to the hostel laundry services each time?', '0'));
+      questions.add(QuestionModel('4', 'How often do you use an iron?', '0'));
+      questions.add(QuestionModel('5', 'On average how long do you use the iron?', '0'));
+      footPrintSectionModel.questions = questions;
+      await footPrintSectionModel.saveToFirestore (uid: currentuserid, footprintCollectionName: 'Hosteller');
+
+     // await firestore.collection('users').doc(currentuserid).collection('Hosteller').doc(footPrintName).set(data);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save data: $e')));

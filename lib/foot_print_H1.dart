@@ -10,6 +10,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'custom_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 
+import 'models/footprintsectionmodel.dart';
+
 class FootPrintH1 extends StatefulWidget {
   const FootPrintH1({super.key});
 
@@ -350,10 +352,10 @@ class _FootPrintH1State extends State<FootPrintH1> {
   }
   void _saveData() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final footprintid = 'food section';
+    final footPrintName = 'food section';
 
     Map<String, dynamic> data = {
-      'footprintid': footprintid,
+      'footprintid': footPrintName,
       'Q1': _selectedValue1,
       'Q2': _selectedValue2,
       'Q3': _selectedValue3,
@@ -369,8 +371,28 @@ class _FootPrintH1State extends State<FootPrintH1> {
 
     try {
       String currentuserid = FirebaseAuth.instance.currentUser!.uid;
-      final footprintid = 'food section';
-      await firestore.collection('users').doc(currentuserid).collection('Hosteller').doc(footprintid).set(data);
+      FootPrintSectionModel footPrintSectionModel = FootPrintSectionModel.empty();
+      footPrintSectionModel.id = '1';
+      footPrintSectionModel.name = footPrintName;
+      List <QuestionModel> questions = [];
+      questions.add(QuestionModel('0', 'How often do you eat /chicken while at university?', '0'));
+      questions.add(QuestionModel('1', 'Which type of meat do you mostly consume?', '0'));
+      questions.add(QuestionModel('2', 'On average, how many items of clothing do you submit to the hostel laundry services each time?', '0'));
+      questions.add(QuestionModel('3', 'How frequently do you eat rice while at university?', '0'));
+      questions.add(QuestionModel('4', 'What are the typical portion sizes of rice in your meals at university?', '0'));
+      questions.add(QuestionModel('5', 'How often do you include vegetables in your meals at university?', '0'));
+      questions.add(QuestionModel('6', 'What are the typical portion sizes of vegetables in your meals at university?', '0'));
+      questions.add(QuestionModel('7', 'How often do you consume milk at university?(can be in terms of milkshake/Tea)', '0'));
+      questions.add(QuestionModel('8', 'On average, how much milk do you consume pr day at university?', '0'));
+      questions.add(QuestionModel('9', 'How often do you consume fruit at university?(can be in terms of milkshake)', '0'));
+      questions.add(QuestionModel('10', 'Where do you primarily get your milk and fruit from at university?(tea and milkshake)', '0'));
+
+
+
+      footPrintSectionModel.questions = questions;
+      await footPrintSectionModel.saveToFirestore (uid: currentuserid, footprintCollectionName: 'Hosteller');
+
+      //await firestore.collection('users').doc(currentuserid).collection('Hosteller').doc(footprintid).set(data);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save data: $e')));

@@ -10,6 +10,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'custom_bottom_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'models/footprintsectionmodel.dart';
+
 class FootPrintH2 extends StatefulWidget {
   const FootPrintH2({super.key});
 
@@ -184,9 +186,9 @@ class _FootPrintH2State extends State<FootPrintH2> {
                             });
                           }),
                           SizedBox(height: 16),
-                          _buildTextFieldWithLabel('Any additional information', _question9),
+                          _buildTextFieldWithLabel('Off which brand your computer/laptop is?', _question9),
                           SizedBox(height: 16),
-                          _buildTextFieldWithLabel('Any additional information', _question10),
+                          _buildTextFieldWithLabel('What is the generation of your laptop?', _question10),
                           SizedBox(height: 16),
                           _buildDropdownWithLabel('Does it have a graphic cards?', _selectedValue11, _question11, (newValue) {
                             setState(() {
@@ -310,10 +312,10 @@ class _FootPrintH2State extends State<FootPrintH2> {
   }
   void _saveData() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final footprintid = 'Housing Section';
+    final footPrintName = 'Housing Section';
 
     Map<String, dynamic> data = {
-      'footprintid': footprintid,
+      'footprintid': footPrintName,
       'Q1': _selectedValue1,
       'Q2': _selectedValue2,
       'Q3': _selectedValue3,
@@ -331,8 +333,28 @@ class _FootPrintH2State extends State<FootPrintH2> {
 
     try {
       String currentuserid = FirebaseAuth.instance.currentUser!.uid;
-      final footprintid = 'Housing Section';
-      await firestore.collection('users').doc(currentuserid).collection('Hosteller').doc(footprintid).set(data);
+      FootPrintSectionModel footPrintSectionModel = FootPrintSectionModel.empty();
+      footPrintSectionModel.id = '2';
+      footPrintSectionModel.name = footPrintName;
+      List <QuestionModel> questions = [];
+      questions.add(QuestionModel('0', 'Where do you have an air conditioner?', '0'));
+      questions.add(QuestionModel('1', 'How often do you use air conditioner in your hostel or department during hot whether?', '0'));
+      questions.add(QuestionModel('2', 'What temperature do you usually set your air conditioner to during use?', '0'));
+      questions.add(QuestionModel('3', 'On average, how long is the air conditioner active in your living space each day during warm cloths?', '0'));
+      questions.add(QuestionModel('4', 'How often do you use a hair dryer in university?', '0'));
+      questions.add(QuestionModel('5', 'Approximately how long do you use your hair dryer each time?', '0'));
+      questions.add(QuestionModel('6', 'At what heat setting do you typically use your hair dryer?', '0'));
+      questions.add(QuestionModel('7', 'What type of device do you primarily use for your academic work?', '0'));
+      questions.add(QuestionModel('8', 'Off which brand your computer/laptop is?', '0'));
+      questions.add(QuestionModel('9', 'What is the generation of your laptop?', '0'));
+      questions.add(QuestionModel('10', 'Does it have a graphic cards?', '0'));
+      questions.add(QuestionModel('11', 'How many hours per day do you typically use your laptop or computer?', '0'));
+      questions.add(QuestionModel('12', 'Do you have a second hand laptop or computer or new?', '0'));
+
+      footPrintSectionModel.questions = questions;
+      await footPrintSectionModel.saveToFirestore (uid: currentuserid, footprintCollectionName: 'Hosteller');
+
+      //await firestore.collection('users').doc(currentuserid).collection('Hosteller').doc(footprintid).set(data);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save data: $e')));

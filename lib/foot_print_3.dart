@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'custom_bottom_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'models/footprintsectionmodel.dart';
+
 class FootPrint3 extends StatefulWidget {
   const FootPrint3({super.key});
 
@@ -222,10 +224,10 @@ class _FootPrint3State extends State<FootPrint3> {
   }
   void _saveData() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final footprintid = 'Consumption Section';
+    final footPrintName = 'Consumption Section';
 
     Map<String, dynamic> data = {
-      'footprintid': footprintid,
+      'footprintid': footPrintName,
       'Q1': _selectedValue1,
       'Q2': _selectedValue2,
       'Q3': _selectedValue3,
@@ -236,8 +238,20 @@ class _FootPrint3State extends State<FootPrint3> {
 
     try {
       String currentuserid = FirebaseAuth.instance.currentUser!.uid;
-      final footprintid = 'Consumption Section';
-      await firestore.collection('users').doc(currentuserid).collection('Daily Schooler').doc(footprintid).set(data);
+      FootPrintSectionModel footPrintSectionModel = FootPrintSectionModel.empty();
+      footPrintSectionModel.id = '3';
+      footPrintSectionModel.name = footPrintName;
+      footPrintSectionModel.sectionValue=20.0;
+      List <QuestionModel> questions = [];
+      questions.add(QuestionModel('0', 'How often do you use the print shop for printing documents?', '0',_selectedValue1));
+      questions.add(QuestionModel('1', 'What types of document do you typically print at the print shop?', '0',_selectedValue2));
+      questions.add(QuestionModel('2', 'When using common print shop, how often do you opt for double-sided printing to save paper?', '0',_selectedValue3));
+      questions.add(QuestionModel('3', 'When feasible, do you choose to keep documents in digital format instead of printing them out?', '0',_selectedValue4));
+      questions.add(QuestionModel('4', 'On average, how many pages do you print shop?', '0',_selectedValue5));
+
+      footPrintSectionModel.questions = questions;
+      await footPrintSectionModel.saveToFirestore (uid: currentuserid, footprintCollectionName: 'Daily Schoolar');
+      //await firestore.collection('users').doc(currentuserid).collection('Daily Schooler').doc(footprintid).set(data);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save data: $e')));

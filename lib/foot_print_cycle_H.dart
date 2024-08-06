@@ -16,6 +16,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'custom_bottom_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'models/footprintsectionmodel.dart';
+
 class FootPrintCycleH extends StatefulWidget {
   const FootPrintCycleH({super.key});
 
@@ -268,10 +270,10 @@ class _FootPrintCycleHState extends State<FootPrintCycleH> {
     });
 
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final footprintid = 'Transport Section';
+    final footPrintName = 'Transport Section';
 
     Map<String, dynamic> data = {
-      'footprintid': footprintid,
+      'footprintid': footPrintName,
       'Q1': _selectedValue1,
       'Q2': _selectedValue1,
       'Q3': _question3.text,
@@ -282,7 +284,20 @@ class _FootPrintCycleHState extends State<FootPrintCycleH> {
 
     try {
       String currentuserid = FirebaseAuth.instance.currentUser!.uid;
-      await firestore.collection('users').doc(currentuserid).collection('Hosteller').doc(footprintid).set(data);
+      FootPrintSectionModel footPrintSectionModel = FootPrintSectionModel.empty();
+      footPrintSectionModel.id = '4';
+      footPrintSectionModel.name = footPrintName;
+      List <QuestionModel> questions = [];
+      questions.add(QuestionModel('0', 'What is your primary mode of transportation for commuting to and from university?', '0'));
+      questions.add(QuestionModel('1', 'Approximately how far you walk/cycle to Department?', '0'));
+      questions.add(QuestionModel('2', 'Starting point', '0'));
+      questions.add(QuestionModel('3', 'Department (Destination point)', '0'));
+      questions.add(QuestionModel('4', 'Approximately how long your walk/cycle is to the department?', '0'));
+
+
+      footPrintSectionModel.questions = questions;
+      await footPrintSectionModel.saveToFirestore (uid: currentuserid, footprintCollectionName: 'Hosteller');
+     // await firestore.collection('users').doc(currentuserid).collection('Hosteller').doc(footprintid).set(data);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
       return true;
     } catch (e) {

@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'custom_bottom_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'models/footprintsectionmodel.dart';
+
 class FootPrint2 extends StatefulWidget {
   const FootPrint2({super.key});
 
@@ -280,10 +282,10 @@ class _FootPrint2State extends State<FootPrint2> {
   }
   void _saveData() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final footprintid = 'Housing Section';
+    final footPrintName = 'Housing Section';
 
     Map<String, dynamic> data = {
-      'footprintid': footprintid,
+      'footprintid': footPrintName,
       'Q1': _selectedValue1,
       'Q2': _selectedValue2,
       'Q3': _selectedValue3,
@@ -298,8 +300,25 @@ class _FootPrint2State extends State<FootPrint2> {
 
     try {
       String currentuserid = FirebaseAuth.instance.currentUser!.uid;
-      final footprintid = 'Housing Section';
-      await firestore.collection('users').doc(currentuserid).collection('Daily Schooler').doc(footprintid).set(data);
+      FootPrintSectionModel footPrintSectionModel = FootPrintSectionModel.empty();
+      footPrintSectionModel.id = '2';
+      footPrintSectionModel.name = footPrintName;
+      footPrintSectionModel.sectionValue=20.0;
+      List <QuestionModel> questions = [];
+      questions.add(QuestionModel('0', 'Where do you have an air conditioner?', '0',_selectedValue1));
+      questions.add(QuestionModel('1', 'How often do you use air conditioner in your hostel or department during hot whether?', '0',_selectedValue2));
+      questions.add(QuestionModel('2', 'What temperature do you usually set your air conditioner to during use?', '0',_selectedValue3));
+      questions.add(QuestionModel('3', 'On average, how long is the air conditioner active in your living space each day during warm cloths?', '0',_selectedValue4));
+      questions.add(QuestionModel('4', 'What type of device do you primarily use for your academic work?', '0',_selectedValue5));
+      questions.add(QuestionModel('5', 'Off which brand your computer/laptop is?', '0',_question6.text));
+      questions.add(QuestionModel('6', 'What is the generation of your laptop?', '0',_question7.text));
+      questions.add(QuestionModel('7', 'Does it have a graphic cards?', '0',_selectedValue8));
+      questions.add(QuestionModel('8', 'How many hours per day do you typically use your laptop or computer?', '0',_selectedValue9));
+      questions.add(QuestionModel('9', 'Do you have a second hand laptop or computer or new?', '0',_selectedValue10));
+
+      footPrintSectionModel.questions = questions;
+      await footPrintSectionModel.saveToFirestore (uid: currentuserid, footprintCollectionName: 'Daily Schoolar');
+      //await firestore.collection('users').doc(currentuserid).collection('Daily Schooler').doc(footprintid).set(data);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save data: $e')));
