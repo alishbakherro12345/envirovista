@@ -72,7 +72,7 @@ class _SignUpState extends State<SignUp> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: Color(0xffEEEEEE),
+       // backgroundColor: Color(0xffEEEEEE),
         body: Column(
           children: [
             const SizedBox(height: 20),
@@ -81,7 +81,7 @@ class _SignUpState extends State<SignUp> {
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage("images/signup-2.jpg"),
+                    image: AssetImage("images/signup-1.png"),
                   ),
                 ),
                 child: Column(
@@ -142,7 +142,7 @@ class _SignUpState extends State<SignUp> {
                                 fillColor: Colors.black,
                                 hintText: 'Username',
                                 prefixIcon: const Icon(
-                                  Icons.account_circle_sharp,
+                                  Icons.person,
                                   color: Color(0xff87A430),
                                 ),
                               ),

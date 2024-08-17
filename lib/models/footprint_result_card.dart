@@ -7,14 +7,20 @@ class FootprintResultCard extends StatefulWidget {
   final String value;
   final List<QuestionModel> questions;
 
-  const FootprintResultCard({super.key, required this.title, required this.value, required this.questions});
+  const FootprintResultCard(
+      {super.key,
+        required this.title,
+        required this.value,
+        required this.questions});
 
   @override
   State<FootprintResultCard> createState() => _FootprintResultCardState();
 }
 
-class _FootprintResultCardState extends State<FootprintResultCard> with SingleTickerProviderStateMixin {
+class _FootprintResultCardState extends State<FootprintResultCard>
+    with SingleTickerProviderStateMixin {
   bool isExpanded = false;
+  final int initiallyVisibleItems = 1;
 
   void toggleExpanded() {
     setState(() {
@@ -24,14 +30,19 @@ class _FootprintResultCardState extends State<FootprintResultCard> with SingleTi
 
   @override
   Widget build(BuildContext context) {
+    // Determine the number of items to display based on the state
+    int itemsToShow = isExpanded
+        ? widget.questions.length
+        : initiallyVisibleItems.clamp(0, widget.questions.length);
+
     return Container(
       width: 350,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: Color(0xffEFF0EF),
         border: Border.all(
-          color: Color(0xff2A3C24), // Border color
-          width: 1, // Border width
+          color: Color(0xff2A3C24),
+          width: 1,
         ),
         boxShadow: [
           BoxShadow(
@@ -44,9 +55,9 @@ class _FootprintResultCardState extends State<FootprintResultCard> with SingleTi
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 40, bottom: 10),
+            padding: const EdgeInsets.only(top: 20, bottom: 20),
             child: Text(
-              widget.title,
+              '${widget.title} Carbon Footprint',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
@@ -55,62 +66,63 @@ class _FootprintResultCardState extends State<FootprintResultCard> with SingleTi
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.only(bottom: 10),
             child: Text(
               '(kg/year)',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
-
+          // Display the list items
           AnimatedSize(
             duration: Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             child: Column(
-              children: isExpanded
-                  ? [
+              children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                   child: Column(
                     children: [
-                      for(int i=0; i<widget.questions.length; i++)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                widget.questions[i].question,
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                            Text(
-                              widget.questions[i].modelValue,
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ],
-                        ),
-                      // Add more rows or content here if needed
+                      for (int i = 0; i < itemsToShow; i++)
+                       Row(
+                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                         children: [
+                           Expanded(
+                             child: Text(
+                               widget.questions[i].question,
+                               style: TextStyle(color: Colors.black),
+                             ),
+                           ),
+                         Text(
+                           widget.questions[i].modelValue,
+                           style: TextStyle(color: Colors.black),
+                         ),],)
                     ],
                   ),
                 ),
-              ]
-                  : [],
+              ],
             ),
           ),
-          GestureDetector(
-            onTap: toggleExpanded,
-            child: Container(
-              height: 50,
-              width: double.infinity,
-              child: Center(
-                child: Icon(
-                  isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+          // Show the icon to expand/collapse the list
+          if (widget.questions.length > initiallyVisibleItems)
+            GestureDetector(
+              onTap: toggleExpanded,
+              child: Container(
+                height: 50,
+                width: double.infinity,
+                child: Center(
+                  child: Icon(
+                    isExpanded
+                        ? Icons.arrow_drop_up
+                        : Icons.arrow_drop_down,
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
   }
 }
+
 

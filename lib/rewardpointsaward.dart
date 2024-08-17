@@ -8,7 +8,7 @@ class Rewardpointsaward extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20,right: 20,bottom: 8),
+      padding: const EdgeInsets.only(left: 20,right: 20,bottom: 5),
       child: Container(
         height: 85,
         decoration: BoxDecoration(
@@ -60,7 +60,7 @@ class Rewardpointsaward extends StatelessWidget {
                     ),
                   ),
                 ),
-                title: Text('Milestone Achieved',style: TextStyle(color: Color(0xff0D1E26),fontWeight: FontWeight.bold,fontSize: 18),),
+                title: Text('Milestone Achieved',style: TextStyle(color: Color(0xff0D1E26),fontWeight: FontWeight.bold,fontSize: 14),),
 
               ),
             ),

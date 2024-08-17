@@ -44,6 +44,7 @@ class _SignInState extends State<SignIn> {
         loading = false;
       });
 
+
     }).onError((error,stackTrace){
       debugPrint(error.toString());
       showToast(error.toString(),context:context);
@@ -54,7 +55,7 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: const Color(0xffEEEEEE),
+      //backgroundColor: const Color(0xffEEEEEE),
       body: Column(
         children: [
           const SizedBox(height: 150),
@@ -104,7 +105,7 @@ class _SignInState extends State<SignIn> {
                             hintText: 'email',
                             //  cursorColor : Color(0xff87A430),
                             prefixIcon: const Icon(
-                              Icons.email,
+                              Icons.person,
                               color: Color(0xff87A430),
                             )),
                         validator: (value) {
@@ -167,7 +168,7 @@ class _SignInState extends State<SignIn> {
                       alignment: Alignment.bottomRight,
                       child: TextButton(
                         onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => EmailInputScreen()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen()));
                         },
                         child: Text(
                           'Forget Password?',
@@ -185,7 +186,7 @@ class _SignInState extends State<SignIn> {
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("images/signin-1.jpg"),
+                image: AssetImage("images/signin-2.png"),
               ),
             ),
             child: Column(

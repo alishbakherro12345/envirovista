@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:envirovista/foot_print_page.dart';
 import 'package:envirovista/models/footprint_result_card.dart';
 import 'package:envirovista/models/footprintsectionmodel.dart';
-import 'package:envirovista/roundbutton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -90,7 +89,6 @@ class _FootprintResultState extends State<FootprintResult> {
               height: 600,
               color: Color(0xffEFF0EF),
               child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
                 child: Column(
                     children: [
                       Container(
@@ -249,7 +247,6 @@ class _FootprintResultState extends State<FootprintResult> {
                           },
                         ),
                       ),
-
                     ],
                   ),
                 ),

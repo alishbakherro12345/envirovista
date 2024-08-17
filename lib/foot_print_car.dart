@@ -1,6 +1,4 @@
-import 'package:envirovista/foot_print_1.dart';
 import 'package:envirovista/foot_print_3.dart';
-import 'package:envirovista/foot_print_4.dart';
 import 'package:envirovista/foot_print_cycle.dart';
 import 'package:envirovista/foot_print_motorcycle.dart';
 import 'package:envirovista/foot_print_university_point.dart';
@@ -9,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:envirovista/roundbutton.dart';
 import 'package:envirovista/top_nav_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'custom_bottom_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'models/footprintsectionmodel.dart';
@@ -307,6 +304,7 @@ class _FootPrintCarState extends State<FootPrintCar> {
       FootPrintSectionModel footPrintSectionModel = FootPrintSectionModel.empty();
       footPrintSectionModel.id = '4';
       footPrintSectionModel.name = footPrintName;
+      footPrintSectionModel.sectionValue=20.0;
       List <QuestionModel> questions = [];
       questions.add(QuestionModel('0', 'What is your primary mode of transportation for commuting to and from university?', '0',_selectedValue1));
       questions.add(QuestionModel('1', 'Starting Point', '0',_question2.text));
@@ -320,7 +318,7 @@ class _FootPrintCarState extends State<FootPrintCar> {
       questions.add(QuestionModel('9', 'How much fuel is consumed in a round trip?(from: home to uni and vice versa)', '0',_question10.text));
 
       footPrintSectionModel.questions = questions;
-      await footPrintSectionModel.saveToFirestore (uid: currentuserid, footprintCollectionName: 'Daily Schooler');
+      await footPrintSectionModel.saveToFirestore (uid: currentuserid, footprintCollectionName: 'Daily Schoolar');
      // await firestore.collection('users').doc(currentuserid).collection('Daily Schooler').doc(footprintid).set(data);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
       return true;
@@ -342,20 +340,28 @@ class _FootPrintCarState extends State<FootPrintCar> {
     final footprintid = 'Overall Results';
 
     Map<String, dynamic> data = {
-      'Food section': '0',
-      'Housing': '0',
-      'Consumption': '0',
-      'Transportation': '0',
+      'Food section': '0',  // Replace '0' with actual calculated values
+      'Housing': '0',       // Replace '0' with actual calculated values
+      'Consumption': '0',   // Replace '0' with actual calculated values
+      'Transportation': '0', // Replace '0' with actual calculated values
     };
 
     try {
       String currentuserid = FirebaseAuth.instance.currentUser!.uid;
 
-     //await firestore.collection('users').doc(currentuserid).collection('Hosteller').doc(footprintid).set(data);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data saved successfully!')));
+      // Save the data to the user's document in the Firestore collection
+      await firestore.collection('users')
+          .doc(currentuserid)
+          .collection('Daily Schoolar')
+          .doc(footprintid)
+          .set(data);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Data saved successfully!')));
       return true;
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to save data: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save data: $e')));
       return false;
     } finally {
       setState(() {

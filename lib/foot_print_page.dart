@@ -1,6 +1,5 @@
 import 'package:envirovista/foot_print_1.dart';
 import 'package:envirovista/foot_print_H0.dart';
-import 'package:envirovista/foot_print_H1.dart';
 import 'package:envirovista/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'custom_bottom_nav_bar.dart';

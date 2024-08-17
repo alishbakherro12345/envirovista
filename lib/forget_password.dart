@@ -1,133 +1,111 @@
+import 'package:envirovista/roundbutton.dart';
+import 'package:envirovista/sign_in.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
-class EmailInputScreen extends StatelessWidget {
+class ForgotPasswordScreen extends StatefulWidget {
+  @override
+  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController emailController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void sendPasswordResetEmail(BuildContext context) async {
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
-      // Proceed to the code verification screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => CodeVerificationScreen(email: emailController.text)),
+  void _resetPassword() {
+    if (_formKey.currentState!.validate()) {
+      // Implement your reset password logic here
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Password reset link sent to ${emailController.text}')),
       );
-    } catch (e) {
-      print('Error sending password reset email: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Forgot Password')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => sendPasswordResetEmail(context),
-              child: Text('Send Code'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class CodeVerificationScreen extends StatefulWidget {
-  final String email;
-  CodeVerificationScreen({required this.email});
-
-  @override
-  _CodeVerificationScreenState createState() => _CodeVerificationScreenState();
-}
-
-class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
-  final TextEditingController codeController = TextEditingController();
-
-  void verifyCode(BuildContext context) {
-    // Assume the code is '12345' for demo purposes
-    if (codeController.text == '12345') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PasswordResetScreen(email: widget.email)),
-      );
-    } else {
-      print('Invalid code');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Verify Code')),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: codeController,
-              decoration: InputDecoration(labelText: 'Verification Code'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => verifyCode(context),
-              child: Text('Verify'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
-
-class PasswordResetScreen extends StatelessWidget {
-  final String email;
-  final TextEditingController passwordController = TextEditingController();
-
-  PasswordResetScreen({required this.email});
-
-  void resetPassword(BuildContext context) async {
-    try {
-      User? user = (await FirebaseAuth.instance.signInWithEmailLink(email: email, emailLink: email)).user;
-      if (user != null) {
-        user.updatePassword(passwordController.text);
-        // Navigate to login or home screen
-        Navigator.popUntil(context, ModalRoute.withName('/'));
-      }
-    } catch (e) {
-      print('Error resetting password: $e');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Reset Password')),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(labelText: 'New Password'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => resetPassword(context),
-              child: Text('Reset Password'),
-            ),
-          ],
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                child: Icon(Icons.arrow_back_ios, size: 30),
+                onTap: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (BuildContext context) => SignIn()),
+                  );
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 150),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Forgot Password?',
+                        style: TextStyle(
+                          color: Color(0xff2A3C24),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Please enter your email to reset the password',
+                        style: TextStyle(color: Color(0xff989898), fontSize: 15),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 100),
+                child: Center(
+                  child: Container(
+                    width: 320,
+                    height: 60,
+                    child: TextFormField(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide(width: 1.5, color: Color(0xff87A430)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide(color: Color(0xff87A430)),
+                        ),
+                        hintText: 'Your Email',
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: Color(0xff87A430),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email is required';
+                        } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                          return 'Enter a valid email';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: RoundButton(
+                  title: 'Reset Password',
+                  onTap: _resetPassword,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
