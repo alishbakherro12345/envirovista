@@ -22,105 +22,118 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdvancedDrawer(
       controller: AdvancedDrawerController(),
-      backdropColor: Color(0xff2A3C24),
+      backdropColor: const Color(0xff2A3C24),
       openRatio: 0.60,
       rtlOpening: false,
       animationCurve: Curves.easeInOut,
-      animationDuration: Duration(milliseconds: 700),
+      animationDuration: const Duration(milliseconds: 700),
       child: Scaffold(
         body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 30, left: 8, right: 8, bottom: 20),
-              child: ListTile(
-                leading: ProfileImagePicker(),
-                subtitle: NicknameEditor(),
-                title: Row(
-                  children: [
-                    Text(
-                      'Hey !',
-                      style: TextStyle(
-                          color: Color(0xff444242),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Container(
-                      width: 30,
-                      child: const Center(
-                        child: Image(
-                          image: AssetImage('images/wavinghand-1.png'),
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 30, left: 8, right: 8, bottom: 20),
+                child: ListTile(
+                  leading: ProfileImagePicker(),
+                  subtitle: NicknameEditor(),
+                  title: Row(
+                    children: [
+                         Text(
+                        'Hey !',
+                        style: TextStyle(
+                            color: Color(0xff444242),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Container(
+                        width: 30,
+                        child: const Center(
+                          child: Image(
+                            image: AssetImage('images/wavinghand-1.png'),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.menu, color: Color(0xffA1C34A)),
-                  onPressed: () {
-                    AdvancedDrawerController().showDrawer();
-                  },
+                    ],
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.menu, color: Color(0xffA1C34A)),
+                    onPressed: () {
+                      AdvancedDrawerController().showDrawer();
+                    },
+                  ),
                 ),
               ),
-            ),
-            Obx(() {
-              if (profileController.pieChartNames.isEmpty) {
-                return CircularProgressIndicator();
-              }
-              return CircularChart(
-                isShowingCentreCircle: true,
-                centreCircleBackgroundColor: Colors.white,
-                animationTime: 800,
-                chartHeight: 300,
-                chartWidth: 400,
-                pieChartChildNames: profileController.pieChartNames,
-                pieChartEndColors: [
-                  Color(0xff374f2f),
-                  Color(0xffa2c53a),
-                  Color(0xffc0e859),
-                  Color(0xffb4be7f),
-                ],
-                pieChartStartColors: [
+              Obx(() {
+                if (profileController.pieChartNames.isEmpty) {
+                  return CircularProgressIndicator();
+                }
+
+                // Use the dynamic colors here
+                final List<Color> baseStartColors = [
                   Color(0xff2A3C24),
                   Color(0xff87A430),
                   Color(0xffA1C34A),
+                  Color(0xffd7e883),
                   Color(0xffCAD593),
-                ],
-                centreCircleTitle: "OVERALL",
-                pieChartPercentages: profileController.pieChartPercentages,
-                isShowingLegend: true,
-              );
-            }),
-            Padding(
-              padding: const EdgeInsets.only(top: 30, left: 8, right: 8, bottom: 10),
-              child: ListTile(
-                leading: Text('Reward Points Award',
-                    style: TextStyle(color: Color(0xff87A430), fontSize: 20)),
-                trailing: Icon(Icons.arrow_forward_ios, color: Color(0xffA1C34A), size: 20),
+                ];
+
+                final List<Color> baseEndColors = [
+                  Color(0xff374f2f),
+                  Color(0xffa2c53a),
+                  Color(0xffc0e859),
+                  Color(0xffcde171),
+                  Color(0xffb4be7f),
+                ];
+
+                final int valueCount = profileController.pieChartPercentages.length;
+                final List<Color> pieChartStartColors = baseStartColors.sublist(0, valueCount);
+                final List<Color> pieChartEndColors = baseEndColors.sublist(0, valueCount);
+
+                return CircularChart(
+                  isShowingCentreCircle: true,
+                  centreCircleBackgroundColor: Colors.white,
+                  animationTime: 800,
+                  chartHeight: 300,
+                  chartWidth: 400,
+                  pieChartChildNames: profileController.pieChartNames,
+                  pieChartEndColors: pieChartEndColors,
+                  pieChartStartColors: pieChartStartColors,
+                  centreCircleTitle: "OVERALL",
+                  pieChartPercentages: profileController.pieChartPercentages,
+                  isShowingLegend: true,
+                  overAllPercentage: profileController.totalPercentage,
+                );
+              }),
+              Padding(
+                padding: const EdgeInsets.only(top: 30, left: 8, right: 8, bottom: 10),
+                child: ListTile(
+                  leading: Text('Reward Points Award',
+                      style: TextStyle(color: Color(0xff87A430), fontSize: 20)),
+                  trailing: Icon(Icons.arrow_forward_ios, color: Color(0xffA1C34A), size: 20),
+                ),
               ),
-            ),
-            SingleChildScrollView(
-              child: StreamBuilder<List<Challenge>>(
-                stream: _getChallengesStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No challenges found'));
-                  }
-                  return Column(
-                    children: snapshot.data!.map((challenge) {
-                      return Rewardpointsaward(
-                        title: challenge.title,
-                        points: challenge.points,
-                      );
-                    }).toList(),
-                  );
-                },
+              SingleChildScrollView(
+                child: StreamBuilder<List<Challenge>>(
+                  stream: _getChallengesStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text('No challenges found'));
+                    }
+                    return Column(
+                      children: snapshot.data!.map((challenge) {
+                        return Rewardpointsaward(
+                          title: challenge.title,
+                          points: challenge.points,
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         bottomNavigationBar: CustomBottomNavBar(selectedIndex: 0),
       ),
       drawer: ProfileDrawer(),

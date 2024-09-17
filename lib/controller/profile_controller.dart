@@ -5,19 +5,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ProfileController extends GetxController {
   var pieChartNames = <String>[].obs;
   var pieChartPercentages = <double>[].obs;
+  var totalPercentages = <double>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchResultData();
+    _startListeningToData();
   }
 
-  Future<void> fetchResultData() async {
-    try {
-      String userId = FirebaseAuth.instance.currentUser!.uid;
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
+  double get totalPercentage => pieChartPercentages.fold(0, (sum, item) => sum + item);
 
-      var snapshot = await firestore.collection('users').doc(userId).collection('Daily Schoolar').get();
+  void _startListeningToData() {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    firestore.collection('users').doc(userId).collection('Daily Schoolar').snapshots().listen((snapshot) {
       var docs = snapshot.docs;
 
       if (docs.isNotEmpty) {
@@ -29,8 +31,7 @@ class ProfileController extends GetxController {
           pieChartPercentages.add(doc['sectionValue']);
         }
       }
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
+    });
   }
 }
+

@@ -32,7 +32,7 @@ class _ReducePageState extends State<ReducePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffEFF0EF),
+     // backgroundColor: Color(0xffEFF0EF),
       body: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
         child: Column(

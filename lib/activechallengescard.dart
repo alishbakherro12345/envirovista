@@ -66,7 +66,7 @@ class ActiveChallengesCard extends StatelessWidget {
           width: 185,
           height: 165,
           decoration: BoxDecoration(
-            color: Color(0xffE6E6E6),
+            color: Color(0xffffffff),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: Color(0xff66B630),

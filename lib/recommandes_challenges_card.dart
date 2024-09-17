@@ -68,7 +68,7 @@ class _RecommandesChallengesCardState extends State<RecommandesChallengesCard> {
               // width: 150,
               height: 170,
               decoration: BoxDecoration(
-                color: Color(0xffE6E6E6),
+                color: Color(0xffffffff),
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
                   color: Color(0xff66B630),
