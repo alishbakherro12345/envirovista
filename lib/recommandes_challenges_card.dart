@@ -54,9 +54,10 @@ class _RecommandesChallengesCardState extends State<RecommandesChallengesCard> {
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance.collection('challenges').doc(widget.title).snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(color: Color(0xff66B630));
-        } else if (snapshot.hasError) {
+        // if (snapshot.connectionState == ConnectionState.waiting) {
+        //   return CircularProgressIndicator(color: Color(0xff66B630));
+        // } else
+          if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.hasData) {
           var data = snapshot.data!.data() as Map<String, dynamic>;

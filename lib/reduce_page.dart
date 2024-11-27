@@ -67,7 +67,10 @@ class _ReducePageState extends State<ReducePage> {
                     return Center(child: CircularProgressIndicator(color: Color(0xff66B630), strokeWidth: 2));
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
-                  } else {
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Text('No challenges found');
+                  }
+                  else {
                     final activeChallenges = snapshot.data ?? [];
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,

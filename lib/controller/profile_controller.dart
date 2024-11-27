@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ProfileController extends GetxController {
   var pieChartNames = <String>[].obs;
   var pieChartPercentages = <double>[].obs;
-  var totalPercentages = <double>[].obs;
 
   @override
   void onInit() {
@@ -19,7 +18,12 @@ class ProfileController extends GetxController {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-    firestore.collection('users').doc(userId).collection('Daily Schoolar').snapshots().listen((snapshot) {
+    firestore
+        .collection('users')
+        .doc(userId)
+        .collection('Footprint')
+        .snapshots()
+        .listen((snapshot) {
       var docs = snapshot.docs;
 
       if (docs.isNotEmpty) {
@@ -28,10 +32,11 @@ class ProfileController extends GetxController {
 
         for (var doc in docs) {
           pieChartNames.add(doc['name']);
-          pieChartPercentages.add(doc['sectionValue']);
+          pieChartPercentages.add(doc['sectionValue'].toDouble());
         }
       }
     });
   }
 }
+
 

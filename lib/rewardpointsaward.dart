@@ -29,10 +29,30 @@ class Rewardpointsaward extends StatelessWidget {
                 leading: Container(
                   height: 70,
                   width: 70,
-                  child: Image(image: AssetImage('images/budge-1.png'),fit: BoxFit.fill,),) ,
+                  child: Image(
+                    image: AssetImage('images/budge-1.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                title: Text(
+                  'Milestone Achieved',
+                  style: TextStyle(
+                    color: Color(0xff0D1E26),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
                 subtitle: Row(
                   children: [
-                    Text(title,style: TextStyle(color: Color(0xff646464),fontSize: 12),),
+                    Expanded(  // Ensures the Text widget takes the available space
+                      child: Text(
+                        title,
+                        style: TextStyle(color: Color(0xff646464), fontSize: 12),
+                        maxLines: 1,  // Restrict to 1 line
+                        overflow: TextOverflow.ellipsis,  // Adds ellipsis if text exceeds width
+                        softWrap: false,  // Prevent wrapping
+                      ),
+                    ),
                   ],
                 ),
                 trailing: Container(
@@ -40,29 +60,35 @@ class Rewardpointsaward extends StatelessWidget {
                   width: 70,
                   alignment: Alignment.bottomRight,
                   decoration: BoxDecoration(
-                      color: Color(0xffF7F7F7),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 15,
-                          color: Colors.black26,
-                        )
-                      ]
+                    color: Color(0xffF7F7F7),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 15,
+                        color: Colors.black26,
+                      )
+                    ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 10,right: 10,top: 5,bottom: 5),
+                    padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
                     child: Row(
                       children: [
-                        Text(points,style: TextStyle(color: Color(0xff253010),fontSize: 12,fontWeight: FontWeight.bold),),
+                        Text(
+                          points,
+                          style: TextStyle(
+                            color: Color(0xff253010),
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         SizedBox(width: 5),
                         Image(image: AssetImage('images/coin-1.png')),
                       ],
                     ),
                   ),
                 ),
-                title: Text('Milestone Achieved',style: TextStyle(color: Color(0xff0D1E26),fontWeight: FontWeight.bold,fontSize: 14),),
-
               ),
+
             ),
           ],
         ),

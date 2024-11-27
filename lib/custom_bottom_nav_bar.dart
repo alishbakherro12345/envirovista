@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'profile_page.dart';
-import 'foot_print_page.dart';
-import 'learn_page.dart';
+import 'utils/footprint/foot_print_page.dart';
+import 'utils/learn/learn_page.dart';
 import 'reduce_page.dart';
 
 class CustomBottomNavBar extends StatelessWidget {

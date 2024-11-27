@@ -6,17 +6,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:circular_charts/circular_charts.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'controller/departmental_controller.dart';
 import 'controller/profile_controller.dart';
 import 'custom_bottom_nav_bar.dart';
-import 'foot_print_page.dart';
-import 'learn_page.dart';
+import 'utils/footprint/foot_print_page.dart';
+import 'utils/learn/learn_page.dart';
 import 'rewardpointsaward.dart';
 
 class ProfilePage extends StatelessWidget {
   final ProfileController profileController = Get.put(ProfileController());
+  final DepartmentalController departmentalController = Get.put(DepartmentalController());
+
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+
 
   @override
   Widget build(BuildContext context) {
@@ -28,112 +34,203 @@ class ProfilePage extends StatelessWidget {
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 700),
       child: Scaffold(
-        body: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 30, left: 8, right: 8, bottom: 20),
-                child: ListTile(
-                  leading: ProfileImagePicker(),
-                  subtitle: NicknameEditor(),
-                  title: Row(
+        resizeToAvoidBottomInset: false,
+        body:
+          Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 30, left: 8, right: 8, bottom: 20),
+                  child: ListTile(
+                    leading: ProfileImagePicker(),
+                    subtitle: NicknameEditor(),
+                    title: Row(
+                      children: [
+                           Text(
+                          'Hey !',
+                          style: TextStyle(
+                              color: Color(0xff444242),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Container(
+                          width: 30,
+                          child: const Center(
+                            child: Image(
+                              image: AssetImage('images/wavinghand-1.png'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.menu, color: Color(0xffA1C34A)),
+                      onPressed: () {
+                        AdvancedDrawerController().showDrawer();
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 300,
+                  width: double.infinity,
+                  child: PageView(
+                    scrollDirection: Axis.horizontal,
                     children: [
-                         Text(
-                        'Hey !',
-                        style: TextStyle(
-                            color: Color(0xff444242),
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
+                      Container( decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('images/departmental-1.png'),  // Background image path
+                          fit: BoxFit.cover,  // How the image should be fitted inside the container
+                        ),
+                      ),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child: Obx(() {
+                              // Access the DepartmentalController instance
+                              final departmentalController = Get.find<DepartmentalController>();
+
+                              if (departmentalController.pieChartNames.isEmpty) {
+                                return CircularProgressIndicator(color: Colors.green);
+                              }
+
+                              // Dynamic colors
+                              final List<Color> baseStartColors = [
+                                Color(0xff2A3C24),
+                                Color(0xff87A430),
+                                Color(0xffA1C34A),
+                                Color(0xffd7e883),
+                                Color(0xffCAD593),
+                              ];
+
+                              final List<Color> baseEndColors = [
+                                Color(0xff374f2f),
+                                Color(0xffa2c53a),
+                                Color(0xffc0e859),
+                                Color(0xffcde171),
+                                Color(0xffb4be7f),
+                              ];
+
+                              // Accessing the pieChartPercentages from the controller
+                              final int valueCount = departmentalController.pieChartPercentages.length;
+                              final List<Color> pieChartStartColors = baseStartColors.sublist(0, valueCount);
+                              final List<Color> pieChartEndColors = baseEndColors.sublist(0, valueCount);
+
+                              return CircularChart(
+                                isShowingCentreCircle: true,
+                                centreCircleBackgroundColor: Colors.white,
+                                animationTime: 800,
+                                chartHeight: 300,
+                                chartWidth: 400,
+                                pieChartChildNames: departmentalController.pieChartNames,  // Accessing pieChartNames
+                                pieChartEndColors: pieChartEndColors,
+                                pieChartStartColors: pieChartStartColors,
+                                centreCircleTitle: "OVERALL",
+                                pieChartPercentages: departmentalController.pieChartPercentages,
+                                isShowingLegend: true, // Accessing pieChartPercentages
+                                overAllPercentage: departmentalController.totalPercentage,
+
+                              );
+                            }),
+                          ),
+
+                        ),
                       ),
                       Container(
-                        width: 30,
-                        child: const Center(
-                          child: Image(
-                            image: AssetImage('images/wavinghand-1.png'),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('images/personalview-1.png'),  // Background image path
+                            fit: BoxFit.cover,  // How the image should be fitted inside the container
+                          ),
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10,right: 30),
+                            child: Obx(() {
+                              if (profileController.pieChartNames.isEmpty) {
+                                return CircularProgressIndicator(color: Colors.green);
+                              }
+          
+                              // Dynamic colors
+                              final List<Color> baseStartColors = [
+                                Color(0xff2A3C24),
+                                Color(0xff87A430),
+                                Color(0xffA1C34A),
+                                Color(0xffd7e883),
+                                Color(0xffCAD593),
+                              ];
+          
+                              final List<Color> baseEndColors = [
+                                Color(0xff374f2f),
+                                Color(0xffa2c53a),
+                                Color(0xffc0e859),
+                                Color(0xffcde171),
+                                Color(0xffb4be7f),
+                              ];
+          
+                              final int valueCount = profileController.pieChartPercentages.length;
+                              final List<Color> pieChartStartColors = baseStartColors.sublist(0, valueCount);
+                              final List<Color> pieChartEndColors = baseEndColors.sublist(0, valueCount);
+          
+                              return CircularChart(
+                                isShowingCentreCircle: true,
+                                centreCircleBackgroundColor: Colors.white,
+                                animationTime: 800,
+                                chartHeight: 300,
+                                chartWidth: 400,
+                                pieChartChildNames: profileController.pieChartNames,
+                                pieChartEndColors: pieChartEndColors,
+                                pieChartStartColors: pieChartStartColors,
+                                centreCircleTitle: "OVERALL",
+                                pieChartPercentages: profileController.pieChartPercentages,
+                                isShowingLegend: true,
+                                overAllPercentage: profileController.totalPercentage,
+                              );
+                            }),
                           ),
                         ),
                       ),
+
                     ],
                   ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.menu, color: Color(0xffA1C34A)),
-                    onPressed: () {
-                      AdvancedDrawerController().showDrawer();
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30, left: 8, right: 8, bottom: 10),
+                  child: ListTile(
+                    leading: Text('Reward Points Award',
+                        style: TextStyle(color: Color(0xff87A430), fontSize: 20)),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Color(0xffA1C34A), size: 20),
+                  ),
+                ),
+
+                Expanded(
+                  child: StreamBuilder<List<Challenge>>(
+                    stream: _getChallengesStream(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Center(child: Text('No challenges found'));
+                      }
+                      return SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Column(
+                            children: snapshot.data!.map((challenge) {
+                              return Rewardpointsaward(
+                                title: challenge.title,
+                                points: challenge.points,
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ),
-              ),
-              Obx(() {
-                if (profileController.pieChartNames.isEmpty) {
-                  return CircularProgressIndicator();
-                }
 
-                // Use the dynamic colors here
-                final List<Color> baseStartColors = [
-                  Color(0xff2A3C24),
-                  Color(0xff87A430),
-                  Color(0xffA1C34A),
-                  Color(0xffd7e883),
-                  Color(0xffCAD593),
-                ];
-
-                final List<Color> baseEndColors = [
-                  Color(0xff374f2f),
-                  Color(0xffa2c53a),
-                  Color(0xffc0e859),
-                  Color(0xffcde171),
-                  Color(0xffb4be7f),
-                ];
-
-                final int valueCount = profileController.pieChartPercentages.length;
-                final List<Color> pieChartStartColors = baseStartColors.sublist(0, valueCount);
-                final List<Color> pieChartEndColors = baseEndColors.sublist(0, valueCount);
-
-                return CircularChart(
-                  isShowingCentreCircle: true,
-                  centreCircleBackgroundColor: Colors.white,
-                  animationTime: 800,
-                  chartHeight: 300,
-                  chartWidth: 400,
-                  pieChartChildNames: profileController.pieChartNames,
-                  pieChartEndColors: pieChartEndColors,
-                  pieChartStartColors: pieChartStartColors,
-                  centreCircleTitle: "OVERALL",
-                  pieChartPercentages: profileController.pieChartPercentages,
-                  isShowingLegend: true,
-                  overAllPercentage: profileController.totalPercentage,
-                );
-              }),
-              Padding(
-                padding: const EdgeInsets.only(top: 30, left: 8, right: 8, bottom: 10),
-                child: ListTile(
-                  leading: Text('Reward Points Award',
-                      style: TextStyle(color: Color(0xff87A430), fontSize: 20)),
-                  trailing: Icon(Icons.arrow_forward_ios, color: Color(0xffA1C34A), size: 20),
-                ),
-              ),
-              SingleChildScrollView(
-                child: StreamBuilder<List<Challenge>>(
-                  stream: _getChallengesStream(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(child: Text('No challenges found'));
-                    }
-                    return Column(
-                      children: snapshot.data!.map((challenge) {
-                        return Rewardpointsaward(
-                          title: challenge.title,
-                          points: challenge.points,
-                        );
-                      }).toList(),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
         bottomNavigationBar: CustomBottomNavBar(selectedIndex: 0),
       ),
       drawer: ProfileDrawer(),
@@ -162,31 +259,55 @@ class Challenge {
 
   Challenge({required this.title, required this.points});
 }
-
 class ProfileImagePicker extends StatefulWidget {
   @override
   _ProfileImagePickerState createState() => _ProfileImagePickerState();
 }
 
 class _ProfileImagePickerState extends State<ProfileImagePicker> {
-  File? _image;
-  final ImagePicker _picker = ImagePicker();
+  File? _image; // Image file object
+  final ImagePicker _picker = ImagePicker(); // ImagePicker instance
+  final String userId = FirebaseAuth.instance.currentUser!.uid; // Get the current user's ID
 
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileImage(); // Load the existing image when the widget is initialized
+  }
+
+  // Load the existing profile image path from shared preferences
+  Future<void> _loadProfileImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? imagePath = prefs.getString('profileImagePath_$userId'); // Use user ID to get the specific image path
+    if (imagePath != null) {
+      setState(() {
+        _image = File(imagePath); // Set the loaded image
+      });
+    }
+  }
+
+  // Function to pick an image from the gallery
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        _image = File(pickedFile.path); // Set the picked image
       });
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('imagePath', pickedFile.path);
+      _saveImagePathToPrefs(pickedFile.path); // Save the image path to shared preferences
     }
+  }
+
+  // Save the image path to shared preferences
+  Future<void> _saveImagePathToPrefs(String imagePath) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('profileImagePath_$userId', imagePath); // Use user ID to save the specific image path
   }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        // Profile image container
         Container(
           width: 55,
           height: 55,
@@ -195,7 +316,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
             border: Border.all(color: Color(0xffA1C34A), width: 2),
           ),
           child: _image == null
-              ? Icon(Icons.person, size: 30, color: Colors.grey)
+              ? Icon(Icons.person, size: 30, color: Colors.grey) // Default icon if no image
               : ClipOval(
             child: Image.file(
               _image!,
@@ -205,6 +326,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
             ),
           ),
         ),
+        // Icon button to pick an image
         Positioned(
           bottom: -8,
           right: -15,
@@ -212,14 +334,13 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
             icon: Icon(Icons.add),
             iconSize: 20,
             color: Colors.grey,
-            onPressed: _pickImage,
+            onPressed: _pickImage, // Call function to pick image
           ),
         ),
       ],
     );
   }
 }
-
 class NicknameEditor extends StatefulWidget {
   @override
   _NicknameEditorState createState() => _NicknameEditorState();
@@ -228,70 +349,89 @@ class NicknameEditor extends StatefulWidget {
 class _NicknameEditorState extends State<NicknameEditor> {
   final TextEditingController _textController = TextEditingController();
   bool _isEditing = false;
-  String _nickname = 'Username';
 
-  @override
-  void initState() {
-    super.initState();
-    _loadProfile();
-  }
-
-  Future<void> _toggleEdit() async {
+  Future<void> _toggleEdit(String currentNickname) async {
     setState(() {
       if (_isEditing) {
-        _nickname = _textController.text;
-        _saveNickname(_nickname);
+        String updatedNickname = _textController.text;
+        _saveNicknameToFirestore(updatedNickname);
       } else {
-        _textController.text = _nickname;
+        _textController.text = currentNickname;
       }
       _isEditing = !_isEditing;
     });
   }
 
-  Future<void> _saveNickname(String nickname) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('nickname', nickname);
-  }
-
-  Future<void> _loadProfile() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _nickname = prefs.getString('nickname') ?? 'Username';
+  Future<void> _saveNicknameToFirestore(String nickname) async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      'nickname': nickname,
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _toggleEdit,
-      child: _isEditing
-          ? Container(
-        width: 60,
-        child: TextField(
-          controller: _textController,
-          decoration: InputDecoration(
-            hintText: 'Type..',
-            border: InputBorder.none,
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance.collection('users').doc(userId).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text("Error: ${snapshot.error}");
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text("Loading...");
+        }
+
+        // Get the current nickname from the snapshot, or default to 'Username' if it doesn't exist.
+        String nickname = snapshot.data?.get('nickname') ?? 'Username';
+
+        return GestureDetector(
+          onTap: () => _toggleEdit(nickname),
+          child: _isEditing
+              ? Container(
+            width: 60,
+            child: TextField(
+              controller: _textController,
+              decoration: InputDecoration(
+                hintText: 'Type..',
+                border: InputBorder.none,
+              ),
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(0xff444242),
+              ),
+              onSubmitted: (_) => _toggleEdit(nickname),
+            ),
+          )
+              : Text(
+            nickname,
+            style: TextStyle(
+              fontSize: 16,
+              color: Color(0xffA1C34A),
+            ),
           ),
-          style: TextStyle(
-            fontSize: 16,
-            color: Color(0xff444242),
-          ),
-          onSubmitted: (_) => _toggleEdit(),
-        ),
-      )
-          : Text(
-        _nickname,
-        style: TextStyle(
-          fontSize: 16,
-          color: Color(0xffA1C34A),
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
 class ProfileDrawer extends StatelessWidget {
+  Future<void> logout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      //final prefs = await SharedPreferences.getInstance();
+      //prefs.remove('profileImagePath');
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => SignIn()), // Replace with your login screen
+      );
+    } catch (e) {
+      print('Error signing out: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -322,6 +462,7 @@ class ProfileDrawer extends StatelessWidget {
             ],
           ),
           NicknameEditor(),
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,  // Aligns all children to the start
             children: [
@@ -350,7 +491,7 @@ class ProfileDrawer extends StatelessWidget {
                   child: Text('Reduce Screen',style: TextStyle(color: Colors.white),),
                 ),),
               TextButton(
-                onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => SignIn()));} ,
+                onPressed: () {logout(context);} ,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Text('Log Out',style: TextStyle(color: Colors.white),),

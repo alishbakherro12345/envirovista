@@ -36,7 +36,7 @@ class _FootprintResultCardState extends State<FootprintResultCard>
         : initiallyVisibleItems.clamp(0, widget.questions.length);
 
     return Container(
-      width: 350,
+      width: 360,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: Color(0xffEFF0EF),

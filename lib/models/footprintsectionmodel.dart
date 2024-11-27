@@ -6,7 +6,7 @@ class FootPrintSectionModel {
   String name = '';
   String description = '';
   List<QuestionModel> questions = [];
-  double sectionValue = 0.0;
+  int sectionValue = 20;
 
   FootPrintSectionModel.empty();
 

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'profile_page.dart';
-import 'recommandes_challenges_card.dart'; // Update with correct import for RecommandesChallengesCard
-import 'custom_bottom_nav_bar.dart';
+
 
 class ActiveChallengesCard extends StatelessWidget {
   final String title;
@@ -49,7 +46,10 @@ class ActiveChallengesCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return _ChallengeDetailsDialog(title: title, userId: userId);
+        return _ChallengeDetailsDialog(
+            title: title,
+            userId: userId,
+        );
       },
     );
   }
@@ -88,7 +88,7 @@ class ActiveChallengesCard extends StatelessWidget {
                   stream: _getCompletionPercentageStream(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return CircularProgressIndicator(color: Colors.green,);
                     }
                     if (snapshot.hasError) {
                       return Text('Error');
@@ -216,9 +216,16 @@ class __ChallengeDetailsDialogState extends State<_ChallengeDetailsDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(
-        'Challenge Details',
-        style: TextStyle(color: Color(0xff66B630)),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Challenge Details', // Replace with a long title if needed
+            style: TextStyle(color: Color(0xff66B630)),
+            softWrap: true,   // Ensures text wraps within available space
+            maxLines: null,   // Allows unlimited lines for wrapping
+          ),
+        ],
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -231,7 +238,7 @@ class __ChallengeDetailsDialogState extends State<_ChallengeDetailsDialog> {
                 return Center(child: CircularProgressIndicator());
               }
 
-             return Row(
+              return Row(
                 children: [
                   Checkbox(
                     value: isCompleted,
@@ -241,7 +248,12 @@ class __ChallengeDetailsDialogState extends State<_ChallengeDetailsDialog> {
                     },
                   ),
                   SizedBox(width: 8),
-                  Text(task.title),
+                  Expanded(
+                    child: Text(
+                      task.title,
+                      style: TextStyle(overflow: TextOverflow.visible), // Makes sure the full text is visible
+                    ),
+                  ),
                 ],
               );
             },
@@ -261,6 +273,7 @@ class __ChallengeDetailsDialogState extends State<_ChallengeDetailsDialog> {
       ],
     );
   }
+
 }
 
 class Task {

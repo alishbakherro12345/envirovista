@@ -508,6 +508,7 @@ class _SignUpState extends State<SignUp> {
                                   'rollno': rollnoController.text,
                                   'grade': gradeController.text,
                                   'gender': genderController.text,
+                                  'nickname':'nickname',
                                 });
                                 setState(() {
                                   loading = false;

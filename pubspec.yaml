@@ -91,6 +91,10 @@ flutter:
     - images/foodcard-3.png
     - images/foodcard-4.png
     - images/foodcard-5.png
+    - images/foodcard-6.png
+    - images/foodcard-7.png
+    - images/foodcard-8.png
+    - images/foodcard-9.png
     - images/wavinghand-1.png
     - images/apple-1.png
     - images/electricityplug-1.png
@@ -103,6 +107,36 @@ flutter:
     - images/menu-2.png
     - images/signin-2.png
     - images/signup-1.png
+    - images/personalview-1.png
+    - images/departmental-1.png
+    - images/img1-t.png
+    - images/img2-t.png
+    - images/img3-t.png
+    - images/img4-t.png
+    - images/img5-t.png
+    - images/img6-t.png
+    - images/img7-t.png
+    - images/img8-t.png
+    - images/img9-t.png
+    - images/img1-h.png
+    - images/img2-h.png
+    - images/img3-h.png
+    - images/img4-h.png
+    - images/img5-h.png
+    - images/img6-h.png
+    - images/img7-h.png
+    - images/water1-save.png
+    - images/recycle-1.png
+    - images/recycle-2.png
+    - images/recycle-3.png
+    - images/recycle-4.png
+    - images/recycle-5.png
+
+
+
+
+
+
 
 
 
